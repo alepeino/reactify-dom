@@ -1,0 +1,26 @@
+{
+  "name": "reactify-dom",
+  "version": "0.1.0",
+  "description": "Render existing DOM as a tree of React elements",
+  "license": "MIT",
+  "author": {
+    "name": "Alejandro Peinó",
+    "email": "alepeino@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alepeino/reactify-dom.git"
+  },
+  "keywords": [
+    "React"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "lodash-fp": "^0.10.4",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
