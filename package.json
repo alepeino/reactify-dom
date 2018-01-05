@@ -1,7 +1,7 @@
 {
   "name": "reactify-dom",
-  "version": "0.1.0",
-  "description": "Render existing DOM as a tree of React elements",
+  "version": "0.2.0",
+  "description": "Mount React elements over existing DOM markup",
   "license": "MIT",
   "author": {
     "name": "Alejandro Peinó",
@@ -15,18 +15,28 @@
     "React"
   ],
   "main": "index.js",
-  "dependencies": {
-    "lodash": "^4.17.4"
-  },
   "devDependencies": {
+    "babel-preset-react-app": "^3.1.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.0.4",
+    "jest": "^22.0.4",
+    "jsdom": "^11.5.1",
+    "lodash": "^4.17.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
   },
   "peerDependencies": {
+    "babel-preset-react-app": "^3.1.0",
+    "lodash": "^4.17.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
   }
 }
