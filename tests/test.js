@@ -1,5 +1,6 @@
 import { JSDOM } from 'jsdom'
 import ReactifyDOM, { registerComponent } from '../src'
+import { expectDomToContain } from './helpers'
 import {
   TestComponent1,
   TestComponent2
@@ -40,7 +41,10 @@ describe('rendering to DOM', () => {
     const dom = new JSDOM(html)
     ReactifyDOM.render(dom.window.document.body)
 
-    expect(dom.window.document.querySelector('test-component-1').innerHTML).toEqual('Unknown HTML Element')
+    expectDomToContain(dom, 'test-component-1', node =>
+      expect(node.innerHTML).toEqual('Unknown HTML Element'),
+      1
+    )
   })
 
   test('registered components render as React elements', () => {
@@ -57,8 +61,14 @@ describe('rendering to DOM', () => {
       .registerComponent(TestComponent2)
       .render(dom.window.document.body)
 
-    expect(dom.window.document.querySelector('test-component-1').innerHTML).not.toContain('Unknown HTML Element')
-    expect(dom.window.document.querySelector('test-component-1').innerHTML).toEqual('<div>Test Component 1</div>')
-    expect(dom.window.document.querySelector('test-component-2').innerHTML).toEqual('<div><p>Test Component 2</p></div>')
+    expectDomToContain(dom, 'test-component-1', node => {
+      expect(node.innerHTML).not.toContain('Unknown HTML Element')
+      expect(node.innerHTML).toEqual('<div>Test Component 1</div>')
+    }, 1)
+
+    expectDomToContain(dom, 'test-component-2', node =>
+      expect(node.innerHTML).toEqual('<div><p>Test Component 2</p></div>'),
+      1
+    )
   })
 })
