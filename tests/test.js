@@ -16,11 +16,11 @@ describe('component registration', () => {
       .toEqual({ 'test-component-1': TestComponent1, 'test-component-2': TestComponent2 })
   })
 
-  test('registers with custom name', () => {
-    expect(registerComponent(TestComponent1, 'myComponent'))
-      .toEqual({ 'myComponent': TestComponent1 })
-    expect(registerComponent(TestComponent2, 'another--component'))
-      .toEqual({ 'myComponent': TestComponent1, 'another--component': TestComponent2 })
+  test('registers with custom selector', () => {
+    expect(registerComponent(TestComponent1, 'my-component'))
+      .toEqual({ 'my-component': TestComponent1 })
+    expect(registerComponent(TestComponent2, '.component-2'))
+      .toEqual({ 'my-component': TestComponent1, '.component-2': TestComponent2 })
   })
 
 })
