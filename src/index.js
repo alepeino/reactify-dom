@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom'
 
 const components = {}
 
-export function registerComponent (component, selector) {
-  components[selector || kebabCase(component.name)] = component
-  return components
+function reactTree (node) {
+  const element = components[Object.keys(components).find(selector => node.matches(selector))]
+  return React.createElement(element)
 }
 
 const ReactifyDOM = {
@@ -19,12 +19,17 @@ const ReactifyDOM = {
     return this
   },
   render (rootNode) {
-    Object.keys(components).forEach(componentName =>
-        Array.from(rootNode.getElementsByTagName(componentName)).forEach(node =>
-          ReactDOM.render(React.createElement(components[componentName]), node)
+    Object.keys(components).forEach(selector =>
+        Array.from(rootNode.querySelectorAll(selector)).forEach(node =>
+          ReactDOM.render(reactTree(node), node)
         )
     )
   }
+}
+
+export function registerComponent (component, selector) {
+  components[selector || kebabCase(component.name)] = component
+  return components
 }
 
 export default ReactifyDOM

@@ -13,3 +13,11 @@ export class TestComponent2 extends React.Component {
     )
   }
 }
+
+export function UlComponent ({ children }) {
+  return (
+    <ul>
+      {children}
+    </ul>
+  )
+}

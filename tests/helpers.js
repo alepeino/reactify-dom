@@ -3,8 +3,8 @@ export const expectDomToContain = ({ window: { document }}, selector, assertions
 
   if (length) expect(nodeList.length).toEqual(length)
 
-  nodeList.forEach(node => {
-    assertions(node)
+  nodeList.forEach((node, index, list) => {
+    assertions(node, index, list)
     expect(document.contains(node)).toBe(true)
   })
 }
