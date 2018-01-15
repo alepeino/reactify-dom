@@ -1,4 +1,9 @@
-import { kebabCase } from 'lodash/fp'
+import {
+  kebabCase,
+  flow,
+  keyBy,
+  mapValues
+} from 'lodash/fp'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -22,8 +27,12 @@ function reactTree (node) {
   const element =
     components[Object.keys(components).find(selector => node.matches(selector))]
     || node.localName
+
+  const props = flow(keyBy('localName'), mapValues('nodeValue'))(node.attributes)
+
   const children = Array.from(node.childNodes).map(reactTree)
-  return React.createElement(element, {}, ...children)
+
+  return React.createElement(element, props, ...children)
 }
 
 const ReactifyDOM = {

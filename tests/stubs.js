@@ -21,3 +21,9 @@ export function UlComponent ({ children }) {
     </ul>
   )
 }
+
+export function LiComponent ({ text }) {
+  return (
+    <li>{text}</li>
+  )
+}

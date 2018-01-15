@@ -2,6 +2,7 @@ import { JSDOM } from 'jsdom'
 import ReactifyDOM, { registerComponent } from '../src'
 import { expectDomToContain } from './helpers'
 import {
+  LiComponent,
   TestComponent1,
   TestComponent2,
   UlComponent
@@ -181,6 +182,51 @@ describe('rendering components', () => {
         expect(node.innerHTML).not.toContain('Comment Node 1')
         expect(node.innerHTML).not.toContain('Comment Node 2')
       })
+    })
+  })
+
+  describe('render components with props', () => {
+    test('props are passed to children', () => {
+      const dom = new JSDOM(`<html>
+        <head></head>
+        <body>
+            <ul>
+              <li-component text="li component 0"></li-component>
+              <li-component text="li component 1"></li-component>
+              <li-component text="li component 2"></li-component>
+            </ul>
+        </body>
+      </html>`)
+
+      ReactifyDOM.registerComponent(LiComponent)
+        .render(dom.window.document.body)
+
+      expectDomToContain(dom, 'li-component > *', (node, index) => {
+        expect(node.tagName).toEqual('LI')
+        expect(node.textContent).toEqual(`li component ${index}`)
+      }, 3)
+    })
+
+    test('standard HTML tags support attributes as props', () => {
+      const dom = new JSDOM(`<html>
+        <head></head>
+        <body>
+            <ul-component>
+              <li title="li element 0">Item 0</li>
+              <li title="li element 1">Item 1</li>
+            </ul-component>
+        </body>
+      </html>`)
+
+      ReactifyDOM.registerComponent(UlComponent)
+        .registerComponent(TestComponent1)
+        .render(dom.window.document.body)
+
+      expectDomToContain(dom, 'ul-component > * > *', (node, index) => {
+        expect(node.tagName).toEqual('LI')
+        expect(node.getAttribute('title')).toEqual(`li element ${index}`)
+        expect(node.textContent).toEqual(`Item ${index}`)
+      }, 2)
     })
   })
 })
