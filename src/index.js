@@ -21,6 +21,33 @@ const NODE_TYPE = {
 
 const components = {}
 
+const ATTRIBUTE_NAME_REPLACE = {
+  'for': 'htmlFor',
+  'class': 'className',
+  'readonly': 'readOnly'
+}
+
+const BOOLEAN_ATTRIBUTES = [
+  'checked',
+  'defer',
+  'disabled',
+  'ismap',
+  'multiple',
+  'noresize',
+  'readonly',
+  'selected'
+]
+
+function getAttributeName (attribute) {
+  return get(attribute.localName, ATTRIBUTE_NAME_REPLACE) || attribute.localName
+}
+
+function getAttributeValue (attribute) {
+  return BOOLEAN_ATTRIBUTES.includes(attribute.localName)
+    ? attribute.nodeValue !== 'false'
+    : attribute.nodeValue
+}
+
 function reactTree (node) {
   if (node.nodeType === NODE_TYPE.COMMENT) {
     return
@@ -32,7 +59,7 @@ function reactTree (node) {
 
   return React.createElement(
     flow(keys, find(selector => node.matches(selector)), get(__, components))(components) || node.localName,
-    flow(keyBy('localName'), mapValues('nodeValue'))(node.attributes),
+    flow(keyBy(getAttributeName), mapValues(getAttributeValue))(node.attributes),
     ...map(reactTree, node.childNodes)
   )
 }

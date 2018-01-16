@@ -228,6 +228,32 @@ describe('rendering components', () => {
         expect(node.textContent).toEqual(`Item ${index}`)
       }, 2)
     })
+
+    test('JSX attributes special cases', () => {
+      const dom = new JSDOM(`<html>
+        <head></head>
+        <body>
+            <ul-component>
+              <li class="red">
+                <label for="remember">Remember me</label>
+                <input id="remember" type="checkbox" checked="false" disabled readonly />
+              </li>
+            </ul-component>
+        </body>
+      </html>`)
+
+      ReactifyDOM.registerComponent(UlComponent)
+        .render(dom.window.document.body)
+
+      expectDomToContain(dom, 'ul-component > * > *', (node, index) => {
+        expect(node.tagName).toEqual('LI')
+        expect(node.getAttribute('class')).toEqual('red')
+        expect(node.querySelector('label').getAttribute('for')).toEqual('remember')
+        expect(node.querySelector('input').checked).toBe(false)
+        expect(node.querySelector('input').disabled).toBe(true)
+        expect(node.querySelector('input').readOnly).toBe(true)
+      }, 1)
+    })
   })
 })
 
