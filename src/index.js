@@ -1,7 +1,13 @@
 import {
+  __,
   kebabCase,
+  each,
+  find,
   flow,
+  get,
   keyBy,
+  keys,
+  map,
   mapValues
 } from 'lodash/fp'
 import React from 'react'
@@ -24,37 +30,34 @@ function reactTree (node) {
     return node.textContent
   }
 
-  const element =
-    components[Object.keys(components).find(selector => node.matches(selector))]
-    || node.localName
-
-  const props = flow(keyBy('localName'), mapValues('nodeValue'))(node.attributes)
-
-  const children = Array.from(node.childNodes).map(reactTree)
-
-  return React.createElement(element, props, ...children)
+  return React.createElement(
+    flow(keys, find(selector => node.matches(selector)), get(__, components))(components) || node.localName,
+    flow(keyBy('localName'), mapValues('nodeValue'))(node.attributes),
+    ...map(reactTree, node.childNodes)
+  )
 }
 
 const ReactifyDOM = {
-  registerComponent(...args) {
-    registerComponent(...args)
+  registerComponent(component, selector) {
+    components[selector || kebabCase(component.name)] = component
     return this
   },
   clearComponents() {
-    Object.keys(components).forEach(k => delete components[k])
+    flow(keys, each(k => delete components[k]))(components)
     return this
   },
   render (rootNode) {
-    Object.keys(components).forEach(selector =>
-        Array.from(rootNode.querySelectorAll(selector)).forEach(node =>
-          ReactDOM.render(reactTree(node), node)
-        )
-    )
+    flow(
+      keys,
+      each(selector =>
+        each(node => ReactDOM.render(reactTree(node), node), rootNode.querySelectorAll(selector))
+      )
+    )(components)
   }
 }
 
-export function registerComponent (component, selector) {
-  components[selector || kebabCase(component.name)] = component
+export function registerComponent (...args) {
+  ReactifyDOM.registerComponent(...args)
   return components
 }
 
