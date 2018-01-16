@@ -1,6 +1,5 @@
 import {
   __,
-  kebabCase,
   each,
   find,
   flow,
@@ -66,7 +65,7 @@ function reactTree (node) {
 
 const ReactifyDOM = {
   registerComponent(component, selector) {
-    components[selector || kebabCase(component.name)] = component
+    components[selector || component.name.toLowerCase()] = component
     return this
   },
   clearComponents() {

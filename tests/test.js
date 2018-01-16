@@ -12,11 +12,11 @@ beforeEach(ReactifyDOM.clearComponents)
 
 describe('component registration', () => {
 
-  test('registers with default name in kebab case', () => {
+  test('registers with default name in lower case', () => {
     expect(registerComponent(TestComponent1))
-      .toEqual({ 'test-component-1': TestComponent1 })
+      .toEqual({ 'testcomponent1': TestComponent1 })
     expect(registerComponent(TestComponent2))
-      .toEqual({ 'test-component-1': TestComponent1, 'test-component-2': TestComponent2 })
+      .toEqual({ 'testcomponent1': TestComponent1, 'testcomponent2': TestComponent2 })
   })
 
   test('registers with custom selector', () => {
@@ -31,11 +31,11 @@ describe('component registration', () => {
 describe('rendering components', () => {
 
   test('unregistered component renders as unknown element', () => {
-    const dom = new JSDOM(`<html><head></head><body><h1>Title</h1><test-component-1>Unknown HTML Element</test-component-1></body></html>`)
+    const dom = new JSDOM(`<html><head></head><body><h1>Title</h1><TestComponent1>Unknown HTML Element</TestComponent1></body></html>`)
 
     ReactifyDOM.render(dom.window.document.body)
 
-    expectDomToContain(dom, 'test-component-1', node =>
+    expectDomToContain(dom, 'TestComponent1', node =>
       expect(node.innerHTML).toEqual('Unknown HTML Element'),
       1
     )
@@ -46,8 +46,8 @@ describe('rendering components', () => {
       <head></head>
       <body>
         <h1>Title</h1>
-        <test-component-1>Unknown HTML Element</test-component-1>
-        <test-component-2></test-component-2>
+        <TestComponent1>Unknown HTML Element</TestComponent1>
+        <TestComponent2></TestComponent2>
       </body>
     </html>`)
 
@@ -55,12 +55,12 @@ describe('rendering components', () => {
       .registerComponent(TestComponent2)
       .render(dom.window.document.body)
 
-    expectDomToContain(dom, 'test-component-1', node => {
+    expectDomToContain(dom, 'TestComponent1', node => {
       expect(node.innerHTML).not.toContain('Unknown HTML Element')
       expect(node.innerHTML).toEqual('<div>Test Component 1</div>')
     }, 1)
 
-    expectDomToContain(dom, 'test-component-2', node =>
+    expectDomToContain(dom, 'TestComponent2', node =>
       expect(node.innerHTML).toEqual('<div><p>Test Component 2</p></div>'),
       1
     )
@@ -99,7 +99,7 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component><test-component-1></test-component-1><test-component-1></test-component-1></ul-component>
+            <UlComponent><TestComponent1></TestComponent1><TestComponent1></TestComponent1></UlComponent>
         </body>
       </html>`)
 
@@ -107,10 +107,10 @@ describe('rendering components', () => {
         .registerComponent(TestComponent1)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component > *', node => {
+      expectDomToContain(dom, 'UlComponent > *', node => {
         expect(node.tagName).toEqual('UL')
       }, 1)
-      expectDomToContain(dom, 'ul-component > * > *', node => {
+      expectDomToContain(dom, 'UlComponent > * > *', node => {
         expect(node.tagName).toEqual('DIV')
         expect(node.innerHTML).toEqual('Test Component 1')
       }, 2)
@@ -120,10 +120,10 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component>
+            <UlComponent>
               <li>HTML tag as child</li>
               <li>HTML tag as child</li>
-            </ul-component>
+            </UlComponent>
         </body>
       </html>`)
 
@@ -131,10 +131,10 @@ describe('rendering components', () => {
         .registerComponent(TestComponent1)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component > *', node => {
+      expectDomToContain(dom, 'UlComponent > *', node => {
         expect(node.tagName).toEqual('UL')
       }, 1)
-      expectDomToContain(dom, 'ul-component > * > *', node => {
+      expectDomToContain(dom, 'UlComponent > * > *', node => {
         expect(node.tagName).toEqual('LI')
         expect(node.textContent).toEqual('HTML tag as child')
       }, 2)
@@ -144,11 +144,11 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component>
+            <UlComponent>
               Text Node 1
-              <test-component-1></test-component-1>
+              <TestComponent1></TestComponent1>
               Text Node 2
-            </ul-component>
+            </UlComponent>
         </body>
       </html>`)
 
@@ -156,7 +156,7 @@ describe('rendering components', () => {
         .registerComponent(TestComponent1)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component', node => {
+      expectDomToContain(dom, 'UlComponent', node => {
         expect(node.innerHTML).toContain('Text Node 1')
         expect(node.innerHTML).toContain('Text Node 2')
       })
@@ -166,11 +166,11 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component>
+            <UlComponent>
               <!--Comment node 1-->
-              <test-component-1></test-component-1>
+              <TestComponent1></TestComponent1>
               <!--Comment node 2-->
-            </ul-component>
+            </UlComponent>
         </body>
       </html>`)
 
@@ -178,7 +178,7 @@ describe('rendering components', () => {
         .registerComponent(TestComponent1)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component', node => {
+      expectDomToContain(dom, 'UlComponent', node => {
         expect(node.innerHTML).not.toContain('Comment Node 1')
         expect(node.innerHTML).not.toContain('Comment Node 2')
       })
@@ -191,9 +191,9 @@ describe('rendering components', () => {
         <head></head>
         <body>
             <ul>
-              <li-component text="li component 0"></li-component>
-              <li-component text="li component 1"></li-component>
-              <li-component text="li component 2"></li-component>
+              <LiComponent text="li component 0"></LiComponent>
+              <LiComponent text="li component 1"></LiComponent>
+              <LiComponent text="li component 2"></LiComponent>
             </ul>
         </body>
       </html>`)
@@ -201,7 +201,7 @@ describe('rendering components', () => {
       ReactifyDOM.registerComponent(LiComponent)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'li-component > *', (node, index) => {
+      expectDomToContain(dom, 'LiComponent > *', (node, index) => {
         expect(node.tagName).toEqual('LI')
         expect(node.textContent).toEqual(`li component ${index}`)
       }, 3)
@@ -211,10 +211,10 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component>
+            <UlComponent>
               <li title="li element 0">Item 0</li>
               <li title="li element 1">Item 1</li>
-            </ul-component>
+            </UlComponent>
         </body>
       </html>`)
 
@@ -222,7 +222,7 @@ describe('rendering components', () => {
         .registerComponent(TestComponent1)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component > * > *', (node, index) => {
+      expectDomToContain(dom, 'UlComponent > * > *', (node, index) => {
         expect(node.tagName).toEqual('LI')
         expect(node.getAttribute('title')).toEqual(`li element ${index}`)
         expect(node.textContent).toEqual(`Item ${index}`)
@@ -233,19 +233,19 @@ describe('rendering components', () => {
       const dom = new JSDOM(`<html>
         <head></head>
         <body>
-            <ul-component>
+            <UlComponent>
               <li class="red">
                 <label for="remember">Remember me</label>
                 <input id="remember" type="checkbox" checked="false" disabled readonly />
               </li>
-            </ul-component>
+            </UlComponent>
         </body>
       </html>`)
 
       ReactifyDOM.registerComponent(UlComponent)
         .render(dom.window.document.body)
 
-      expectDomToContain(dom, 'ul-component > * > *', (node, index) => {
+      expectDomToContain(dom, 'UlComponent > * > *', (node, index) => {
         expect(node.tagName).toEqual('LI')
         expect(node.getAttribute('class')).toEqual('red')
         expect(node.querySelector('label').getAttribute('for')).toEqual('remember')
@@ -254,17 +254,5 @@ describe('rendering components', () => {
         expect(node.querySelector('input').readOnly).toBe(true)
       }, 1)
     })
-  })
-})
-
-describe('rendering edge-cases', () => {
-
-  test('yields identical DOM when no components mounted', () => {
-    const html = `<html><head></head><body><h1>Title</h1><div>Body</div></body></html>`
-    const dom = new JSDOM(html)
-
-    ReactifyDOM.render(dom.window.document.body)
-
-    expect(dom.serialize()).toEqual(html)
   })
 })
