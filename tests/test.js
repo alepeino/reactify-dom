@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom'
-import ReactifyDOM, { registerComponent } from '../src'
 import { expectDomToContain } from './helpers'
+import ReactifyDOM, { registerComponent } from '../src'
 import {
   LiComponent,
   TestComponent1,

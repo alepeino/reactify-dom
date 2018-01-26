@@ -18,8 +18,6 @@ const NODE_TYPE = {
   COMMENT: 8
 }
 
-const components = {}
-
 const ATTRIBUTE_NAME_REPLACE = {
   'for': 'htmlFor',
   'class': 'className',
@@ -37,11 +35,13 @@ const BOOLEAN_ATTRIBUTES = [
   'selected'
 ]
 
-function getAttributeName (attribute) {
+const components = {}
+
+function attributeName (attribute) {
   return get(attribute.localName, ATTRIBUTE_NAME_REPLACE) || attribute.localName
 }
 
-function getAttributeValue (attribute) {
+function attributeValue (attribute) {
   return BOOLEAN_ATTRIBUTES.includes(attribute.localName)
     ? attribute.nodeValue !== 'false'
     : attribute.nodeValue
@@ -56,11 +56,18 @@ function reactTree (node) {
     return node.textContent
   }
 
-  return React.createElement(
-    flow(keys, find(selector => node.matches(selector)), get(__, components))(components) || node.localName,
-    flow(keyBy(getAttributeName), mapValues(getAttributeValue))(node.attributes),
-    ...map(reactTree, node.childNodes)
-  )
+  const element = flow(
+    keys,
+    find(selector => node.matches(selector)),
+    get(__, components)
+  )(components) || node.localName
+
+  const props = flow(
+    keyBy(attributeName),
+    mapValues(attributeValue)
+  )(node.attributes)
+
+  return React.createElement(element, props, ...map(reactTree, node.childNodes))
 }
 
 const ReactifyDOM = {
@@ -72,11 +79,12 @@ const ReactifyDOM = {
     flow(keys, each(k => delete components[k]))(components)
     return this
   },
-  render (rootNode) {
+  render(rootNode) {
     flow(
       keys,
       each(selector =>
-        each(node => ReactDOM.render(reactTree(node), node), rootNode.querySelectorAll(selector))
+        rootNode.querySelectorAll(selector)
+          .forEach(node => ReactDOM.render(reactTree(node), node))
       )
     )(components)
   }
